@@ -6,8 +6,12 @@ from django.template import Context, Template
 
 from . import forms
 from .models import NewMember
+from django.conf import settings
 
-import top.api
+import urllib.request, urllib.parse
+from urllib.error import URLError, HTTPError
+import time
+import datetime
 
 
 class IndexView(generic.View):
@@ -50,6 +54,36 @@ class WelcomeView(generic.View):
                 from_email='HUSTCA <info@hustca.com>',
                 recipient_list=['engineering@hustca.com'],
             )
+
+            # url = 'http://gw.api.taobao.com/router/rest'
+            # values = {
+            #     'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+            #     'app_key': settings.APPKEY,
+            #     'format': 'json',
+            #     'method': 'alibaba.aliqin.fc.sms.num.send',
+            #     'partner_id': 'apidoc',
+            #     'sign': settings.SECRET,
+            #     'sign_method': 'hmac',
+            #     'timestamp': datetime.datetime.utcfromtimestamp(time.time()).strftime("%Y-%m-%d %H:%M:%S"),
+            #     'v': '2.0',
+            #     'extend': cd['name'],
+            #     'rec_num': '13007100014',
+            #     'sms_free_sign_name': '计算机协会技术部',
+            #     'sms_param': cd['name'],
+            #     'sms_template_code': settings.SMS_TEMPLATE_CODE,
+            #     'sms_type': 'normal',
+            # }
+            # url_values = urllib.parse.urlencode(values).encode(encoding='UTF8')
+            # full_url = urllib.request.Request(url, url_values)
+            # try:
+            #     response = urllib.request.urlopen(full_url)
+            # except HTTPError as e:
+            #     print('Error code:', e.code)
+            # except URLError as e:
+            #     print('Reason', e.reason)
+            # the_page = response.read()
+            # print(the_page)
+
             return render(request, self.template_name, {'form': form})
         else:
             messages.add_message(request, messages.WARNING, '报名失败，请查看各项后的错误提示。')
