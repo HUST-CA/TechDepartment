@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    用户注册
+{% endblock title %}
+
+{% block page %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                <a href="#" class="close" data-dismiss="alert">&times;</a>
+                <strong>{{ message }}</strong>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div style="width: 400px;text-align: center;margin: 0 auto">
+        <h1>2016秋季招新</h1>
+        <br>
+        {% crispy form %}
+    </div>
+{% endblock page %}
