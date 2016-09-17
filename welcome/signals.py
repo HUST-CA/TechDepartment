@@ -4,6 +4,9 @@ from django.core.mail import send_mail
 from django.template import Context, Template
 from django.conf import settings
 
+from welcome.notification_threads import EmailSenderThread
+from welcome.notification_threads import SMSSenderThread
+
 from . import models
 from . import calc_sign
 from . import send_sms
@@ -17,12 +20,14 @@ def create_profile_handler(sender, instance, created, **kwargs):
     if not created:
         return
         # send the message only if new member is coming
-    send_mail(
+    greet_email_thread = EmailSenderThread(
         subject='计算机协会技术部报名',
         message='【计算机协会技术部】亲爱的' + instance.name + '同学，你好：\n        我们已经收到了你的报名信息，请耐心等待后续通知消息，谢谢。',
         from_email='HUSTCA <info@hustca.com>',
         recipient_list=[instance.email],
     )
+    greet_email_thread.start()
+
     messages_template = Template('''【技术部招新】有成员填写表单，请注意查看后台。
                         姓名:{{ name }}
                         性别:{{ sex }}（1为男0为女）
@@ -45,12 +50,13 @@ def create_profile_handler(sender, instance, created, **kwargs):
             'introduction': instance.introduction,
         }
     )
-    send_mail(
+    internal_email_thread = EmailSenderThread(
         subject='计算机协会技术部报名',
         message=messages_template.render(context),
         from_email='HUSTCA <info@hustca.com>',
         recipient_list=['engineering@hustca.com'],
     )
+    internal_email_thread.start()
 
     url = 'http://gw.api.taobao.com/router/rest'
     values = {
@@ -69,7 +75,6 @@ def create_profile_handler(sender, instance, created, **kwargs):
         'timestamp': str(int(time.time())),
         'v': '2.0',
     }
-    sign = calc_sign.calc_sign(values, settings.SECRET)
-    values['sign'] = sign
-    send_sms.send_sms(url, values)
+    sms_sender_thread = SMSSenderThread(url, values)
+    sms_sender_thread.start()
 
