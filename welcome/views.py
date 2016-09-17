@@ -3,13 +3,13 @@ from django.views import generic
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.template import Context, Template
+from django.conf import settings
 
 from . import forms
 from .models import NewMember
-from django.conf import settings
+from . import calc_sign
+from . import send_sms
 
-import urllib.request, urllib.parse
-from urllib.error import URLError, HTTPError
 import time
 import datetime
 
@@ -55,35 +55,26 @@ class WelcomeView(generic.View):
                 recipient_list=['engineering@hustca.com'],
             )
 
-            # url = 'http://gw.api.taobao.com/router/rest'
-            # values = {
-            #     'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
-            #     'app_key': settings.APPKEY,
-            #     'format': 'json',
-            #     'method': 'alibaba.aliqin.fc.sms.num.send',
-            #     'partner_id': 'apidoc',
-            #     'sign': settings.SECRET,
-            #     'sign_method': 'hmac',
-            #     'timestamp': datetime.datetime.utcfromtimestamp(time.time()).strftime("%Y-%m-%d %H:%M:%S"),
-            #     'v': '2.0',
-            #     'extend': cd['name'],
-            #     'rec_num': '13007100014',
-            #     'sms_free_sign_name': '计算机协会技术部',
-            #     'sms_param': cd['name'],
-            #     'sms_template_code': settings.SMS_TEMPLATE_CODE,
-            #     'sms_type': 'normal',
-            # }
-            # url_values = urllib.parse.urlencode(values).encode(encoding='UTF8')
-            # full_url = urllib.request.Request(url, url_values)
-            # try:
-            #     response = urllib.request.urlopen(full_url)
-            # except HTTPError as e:
-            #     print('Error code:', e.code)
-            # except URLError as e:
-            #     print('Reason', e.reason)
-            # the_page = response.read()
-            # print(the_page)
-
+            url = 'http://gw.api.taobao.com/router/rest'
+            values = {
+                # 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+                'app_key': settings.APPKEY,
+                'format': 'json',
+                'method': 'alibaba.aliqin.fc.sms.num.send',
+                'partner_id': 'apidoc',
+                'rec_num': cd['tel'],
+                'sign_method': 'md5',
+                'sms_free_sign_name': 'HUST计协',
+                'sms_param': '{"name":"' + cd['name'] + '"}',
+                'sms_template_code': settings.SMS_TEMPLATE_CODE,
+                'sms_type': 'normal',
+                # 'timestamp': datetime.datetime.utcfromtimestamp(time.time()).strftime("%Y-%m-%d %H:%M:%S"),
+                'timestamp': str(int(time.mktime(datetime.datetime.now().timetuple()))),
+                'v': '2.0',
+            }
+            sign = calc_sign.calc_sign(values, settings.SECRET)
+            values['sign'] = sign
+            send_sms.send_sms(url, values)
             return render(request, self.template_name, {'form': form})
         else:
             messages.add_message(request, messages.WARNING, '报名失败，请查看各项后的错误提示。')

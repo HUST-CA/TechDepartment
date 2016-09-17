@@ -3,7 +3,7 @@ from django import forms
 from .models import Group
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, Field, ButtonHolder, Submit
+from crispy_forms.layout import Layout, Fieldset, Field, ButtonHolder, Submit ,HTML
 from crispy_forms.bootstrap import Tab, TabHolder, AppendedText, InlineRadios
 
 
@@ -60,6 +60,7 @@ class WelcomeForm(forms.Form):
         self.helper = FormHelper(self)
         self.helper.field_class = 'form-horizontal'
         self.helper.form_method = 'post'
+        self.helper.form_id = 'welcome_form'
 
         self.helper.layout = Layout(
             Fieldset(
@@ -79,6 +80,7 @@ class WelcomeForm(forms.Form):
                         AppendedText('dormitory', '''<span class="glyphicon glyphicon-home"></span>''',
                                      placeholder='如:韵苑-11栋-101'),
                         InlineRadios('group'),
+
                         Field('introduction', placeholder='请填写自我介绍，让我们认识你。你可以介绍你自己的项目经历，自己的理想，兴趣爱好以及特长等。'),
                     ),
                 ),
