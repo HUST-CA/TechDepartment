@@ -1,3 +1,6 @@
 *.pyc
-secure_settings.py
+TechDepartment/secure_settings.py
+db.sqlite3
+.idea/
+staticfiles/
 
