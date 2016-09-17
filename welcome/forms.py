@@ -1,10 +1,12 @@
 from django import forms
+from django.utils.translation import ugettext_lazy
 
 from .models import Group
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, Field, ButtonHolder, Submit ,HTML
+from crispy_forms.layout import Layout, Fieldset, Field, ButtonHolder, Submit
 from crispy_forms.bootstrap import Tab, TabHolder, AppendedText, InlineRadios
+from captcha.fields import CaptchaField
 
 
 class WelcomeForm(forms.Form):
@@ -54,6 +56,10 @@ class WelcomeForm(forms.Form):
         required=True,
         max_length=128,
     )
+    captcha = CaptchaField(
+        label='验证码',
+        required=True,
+    )
 
     def __init__(self, *args, **kwargs):
         super(WelcomeForm, self).__init__(*args, **kwargs)
@@ -80,16 +86,18 @@ class WelcomeForm(forms.Form):
                         AppendedText('dormitory', '''<span class="glyphicon glyphicon-home"></span>''',
                                      placeholder='如:韵苑-11栋-101'),
                         InlineRadios('group'),
-
                         Field('introduction', placeholder='请填写自我介绍，让我们认识你。你可以介绍你自己的项目经历，自己的理想，兴趣爱好以及特长等。'),
+                        Field('captcha'),
+                        )
                     ),
                 ),
-            ),
-
             ButtonHolder(
                 Submit('submit', '提交', css_class='button white'),
-            )
+            ),
         )
+        if 'error_messages' not in kwargs:
+                kwargs['error_messages'] = {}
+        kwargs['error_messages'].update({'required': ugettext_lazy('不能为空哦~')})
 
     def clean_name(self):
         name = self.cleaned_data['name']
@@ -134,3 +142,4 @@ class WelcomeForm(forms.Form):
         except ValueError:
             raise forms.ValidationError('玩我有意思吗？')
         return dormitory
+
