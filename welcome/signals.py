@@ -66,9 +66,10 @@ def create_profile_handler(sender, instance, created, **kwargs):
         'sms_type': 'normal',
         # 'timestamp': datetime.datetime.utcfromtimestamp(time.time()).strftime("%Y-%m-%d %H:%M:%S"),
         # please use a unix timestamp
-        'timestamp': str(int(time.mktime(datetime.datetime.now().timetuple()))),
+        'timestamp': str(int(time.time())),
         'v': '2.0',
     }
     sign = calc_sign.calc_sign(values, settings.SECRET)
     values['sign'] = sign
     send_sms.send_sms(url, values)
+
