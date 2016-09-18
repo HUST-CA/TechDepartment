@@ -55,8 +55,8 @@ def create_profile_handler(sender, instance, created, **kwargs):
         'HUSTCA <info@hustca.com>',
         ['engineering@hustca.com'],
     )
-    mass_mail_sender_thread = MassEmailSenderThread(greet_email_tuple,
-                                                    internal_email_tuple)
+    mass_mail_sender_thread = MassEmailSenderThread(messages=(greet_email_tuple, internal_email_tuple),
+                                                    daemon=False)
     mass_mail_sender_thread.start()
 
     url = 'http://gw.api.taobao.com/router/rest'
@@ -76,6 +76,6 @@ def create_profile_handler(sender, instance, created, **kwargs):
         'timestamp': str(int(time.time())),
         'v': '2.0',
     }
-    sms_sender_thread = SMSSenderThread(url, values)
+    sms_sender_thread = SMSSenderThread(url, values, daemon=False)
     sms_sender_thread.start()
 

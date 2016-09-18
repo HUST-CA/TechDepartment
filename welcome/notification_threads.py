@@ -15,14 +15,14 @@ A message is a tuple containing these four elements:
 (subject, message, from_email, recipient_list)
 '''
 class MassEmailSenderThread(threading.Thread):
-    def __init__(self, *messages):
+    def __init__(self, messages, daemon):
         '''
         messages[0] -> first message
                    [3] -> recipient_list in first message
                       [0] -> first address in recipient_list
         '''
         firstReceiverName = messages[0][3][0].split("@", 1)[0]
-        super(MassEmailSenderThread, self).__init__(name = "EmailSenderThread-" + firstReceiverName)
+        super(MassEmailSenderThread, self).__init__(name = "EmailSenderThread-" + firstReceiverName, daemon=daemon)
         self.messages = messages
         
     def run(self):
@@ -35,9 +35,9 @@ For AliDayu. Read its documentation for the params.
 The "sign" parameter will be calculated here. No need to add in the params.
 '''
 class SMSSenderThread(threading.Thread):
-    def __init__(self, url, params):
+    def __init__(self, url, params, daemon):
         firstReceiverName = json.loads(params['sms_param'])['name']
-        super(SMSSenderThread, self).__init__(name = "SMSSenderThread-" + firstReceiverName)
+        super(SMSSenderThread, self).__init__(name = "SMSSenderThread-" + firstReceiverName, daemon=daemon)
         self.url = url
         self.params = params
         
