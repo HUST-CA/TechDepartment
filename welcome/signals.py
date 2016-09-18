@@ -4,7 +4,7 @@ from django.core.mail import send_mail
 from django.template import Context, Template
 from django.conf import settings
 
-from welcome.notification_threads import EmailSenderThread
+from welcome.notification_threads import MassEmailSenderThread
 from welcome.notification_threads import SMSSenderThread
 
 from . import models
@@ -20,13 +20,12 @@ def create_profile_handler(sender, instance, created, **kwargs):
     if not created:
         return
         # send the message only if new member is coming
-    greet_email_thread = EmailSenderThread(
-        subject='计算机协会技术部报名',
-        message='【计算机协会技术部】亲爱的' + instance.name + '同学，你好：\n        我们已经收到了你的报名信息，请耐心等待后续通知消息，谢谢。',
-        from_email='HUSTCA <info@hustca.com>',
-        recipient_list=[instance.email],
+    greet_email_tuple = (
+        '计算机协会技术部报名',
+        '【计算机协会技术部】亲爱的' + instance.name + '同学，你好：\n        我们已经收到了你的报名信息，请耐心等待后续通知消息，谢谢。',
+        'HUSTCA <info@hustca.com>',
+        [instance.email],
     )
-    greet_email_thread.start()
 
     messages_template = Template('''【技术部招新】有成员填写表单，请注意查看后台。
                         姓名:{{ name }}
@@ -50,13 +49,15 @@ def create_profile_handler(sender, instance, created, **kwargs):
             'introduction': instance.introduction,
         }
     )
-    internal_email_thread = EmailSenderThread(
-        subject='计算机协会技术部报名',
-        message=messages_template.render(context),
-        from_email='HUSTCA <info@hustca.com>',
-        recipient_list=['engineering@hustca.com'],
+    internal_email_tuple = (
+        '计算机协会技术部报名',
+        messages_template.render(context),
+        'HUSTCA <info@hustca.com>',
+        ['engineering@hustca.com'],
     )
-    internal_email_thread.start()
+    mass_mail_sender_thread = MassEmailSenderThread(greet_email_tuple,
+                                                    internal_email_tuple)
+    mass_mail_sender_thread.start()
 
     url = 'http://gw.api.taobao.com/router/rest'
     values = {
