@@ -22,6 +22,8 @@ You can install these via `pip`.
 4. Change `DEBUG` to `False` in `settings.py` and set `ALLOWED_HOSTS` to server's host name (xxx.xxx.com)
 5. `python3 manage.py collectstatic`
 6. If there is nothing wrong in last step, overwrite static/ with staticfiles/
-7. Deploy with uWSGI, supervisor and nginx (or anything you like)
-8. Set up redirection on nginx: / -> /welcome
+7. `python3 manage.py createsuperuser`
+8. Deploy with uWSGI and nginx. Remember to use `--enable-threads` for uWSGI
+9. Set up redirection on nginx: / -> /welcome
+10. Log in at `/admin` and create groups
 
