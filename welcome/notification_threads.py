@@ -16,7 +16,7 @@ A message is a tuple containing these four elements:
 
 
 class MassEmailSenderThread(threading.Thread):
-    def __init__(self, messages, daemon):
+    def __init__(self, messages):
         '''
         messages[0] -> first message(the greet message)
                    [3] -> recipient_list in first message
