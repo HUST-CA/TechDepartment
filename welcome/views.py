@@ -1,17 +1,9 @@
 from django.shortcuts import render
 from django.views import generic
 from django.contrib import messages
-# from django.core.mail import send_mail
-# from django.template import Context, Template
-# from django.conf import settings
 
 from . import forms
 from .models import NewMember
-# from . import calc_sign
-# from . import send_sms
-
-# import time
-# import datetime
 
 
 class IndexView(generic.View):
@@ -36,4 +28,3 @@ class WelcomeView(generic.View):
         else:
             messages.add_message(request, messages.WARNING, '报名失败，请查看各项后的错误提示。')
             return render(request, self.template_name, {'form': form})
-

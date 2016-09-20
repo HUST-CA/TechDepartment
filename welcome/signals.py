@@ -1,6 +1,5 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.core.mail import send_mail
 from django.template import Context, Template
 from django.conf import settings
 
@@ -8,11 +7,8 @@ from welcome.notification_threads import MassEmailSenderThread
 from welcome.notification_threads import SMSSenderThread
 
 from . import models
-from . import calc_sign
-from . import send_sms
 
 import time
-import datetime
 
 
 @receiver(post_save, sender=models.NewMember)

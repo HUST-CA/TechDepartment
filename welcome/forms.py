@@ -67,7 +67,7 @@ class WelcomeForm(forms.Form):
         self.helper.field_class = 'form-horizontal'
         self.helper.form_method = 'post'
         self.helper.form_id = 'welcome_form'
-
+        self.helper.attrs = {'onsubmit': 'disable_button()'}
         self.helper.layout = Layout(
             Fieldset(
                 '请填写以下表格',
@@ -88,15 +88,15 @@ class WelcomeForm(forms.Form):
                         InlineRadios('group'),
                         Field('introduction', placeholder='请填写自我介绍，让我们认识你。你可以介绍你自己的项目经历，自己的理想，兴趣爱好以及特长等。'),
                         Field('captcha'),
-                        )
-                    ),
+                    )
                 ),
+            ),
             ButtonHolder(
                 Submit('submit', '提交', css_class='button white'),
             ),
         )
         if 'error_messages' not in kwargs:
-                kwargs['error_messages'] = {}
+            kwargs['error_messages'] = {}
         kwargs['error_messages'].update({'required': ugettext_lazy('不能为空哦~')})
 
     def clean_name(self):
@@ -123,7 +123,7 @@ class WelcomeForm(forms.Form):
             major, grade = college.split('-')
         except ValueError:
             raise forms.ValidationError('你的格式没填对吧?')
-        if grade not in ('15', '16'):
+        if grade not in ('14', '15', '16'):
             raise forms.ValidationError('你的格式没填对吧?')
         else:
             return college
@@ -134,12 +134,9 @@ class WelcomeForm(forms.Form):
             dor, house, code = dormitory.split('-')
         except ValueError:
             raise forms.ValidationError('你的格式没填对吧?')
-        # if dor not in ('韵苑', '沁苑', '紫菘'):
-        #     raise forms.ValidationError('我读书少,不要骗我哦~')
         try:
             int(house)
             int(code)
         except ValueError:
-            raise forms.ValidationError('玩我有意思吗？')
+            raise forms.ValidationError('按照格式填咯')
         return dormitory
-
