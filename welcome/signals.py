@@ -12,7 +12,7 @@ import time
 
 
 @receiver(post_save, sender=models.NewMember)
-def create_profile_handler(sender, instance, created, **kwargs):
+def inform(sender, instance, created, **kwargs):
     if not created:
         return
         # send the message only if new member is coming
