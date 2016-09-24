@@ -9,9 +9,9 @@
 {% block page %}
     {% if messages %}
         {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}">
+            <div class="alert alert-{{ message.level_tag }}">
                 <a href="#" class="close" data-dismiss="alert">&times;</a>
-                <strong>{{ message }}</strong>
+                <strong>{% if 'safe' in message.tags %}{{ message|safe }}{% else %}{{ message }}{% endif %}</strong>
             </div>
         {% endfor %}
     {% endif %}

@@ -23,7 +23,10 @@ class WelcomeView(generic.View):
             cd = form.cleaned_data
             del cd['captcha']
             NewMember.objects.create(**cd)
-            messages.add_message(request, messages.SUCCESS, '报名成功,请确认收到短信或邮件！')
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 '报名成功，请<a href="http://excited.haha.im/?xu=1s">点击此处加入招新群</a>，并确认收到短信或邮件！',
+                                 extra_tags='safe')
             return render(request, self.template_name, {'form': form})
         else:
             messages.add_message(request, messages.WARNING, '报名失败，请查看各项后的错误提示。')
