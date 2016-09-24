@@ -54,7 +54,7 @@ class WelcomeForm(forms.Form):
         label='自我介绍',
         widget=forms.Textarea(),
         required=True,
-        max_length=128,
+        max_length=2000,
     )
     captcha = CaptchaField(
         label='验证码',
@@ -82,9 +82,9 @@ class WelcomeForm(forms.Form):
                         AppendedText('email', '''<span class="glyphicon glyphicon-envelope"></span>''',
                                      placeholder='填写你的邮箱'),
                         AppendedText('college', '''<span class="glyphicon glyphicon-book"></span>''',
-                                     placeholder='按照如"软件工程-15"的格式填写'),
+                                     placeholder='“专业-年级数字”，如“软件工程-15”'),
                         AppendedText('dormitory', '''<span class="glyphicon glyphicon-home"></span>''',
-                                     placeholder='如:韵苑-11栋-101'),
+                                     placeholder='“宿舍区-楼栋号-寝室号”，如“韵苑-11-101”'),
                         InlineRadios('group'),
                         Field('introduction', placeholder='请填写自我介绍，让我们认识你。你可以介绍你自己的项目经历，自己的理想，兴趣爱好以及特长等。'),
                         Field('captcha'),
@@ -103,7 +103,7 @@ class WelcomeForm(forms.Form):
         name = self.cleaned_data['name']
         for char in name:
             if char < u'\u4e00' or char > u'\u9fa5':
-                raise forms.ValidationError('我读书少,这不是中文吧...')
+                raise forms.ValidationError('我读书少，这不是中文吧……')
         return name
 
     def clean_tel(self):
@@ -111,9 +111,9 @@ class WelcomeForm(forms.Form):
         try:
             int(tel)
         except ValueError:
-            raise forms.ValidationError('你确定这是手机号...')
+            raise forms.ValidationError('你确定这是手机号……')
         if len(tel) != 11:
-            raise forms.ValidationError('手机号码应该是11位吧...')
+            raise forms.ValidationError('手机号码应该是11位吧……')
         else:
             return tel
 
@@ -122,9 +122,9 @@ class WelcomeForm(forms.Form):
         try:
             major, grade = college.split('-')
         except ValueError:
-            raise forms.ValidationError('你的格式没填对吧?')
+            raise forms.ValidationError('你的格式没填对吧？')
         if grade not in ('14', '15', '16'):
-            raise forms.ValidationError('你的格式没填对吧?')
+            raise forms.ValidationError('目前仅接受14级到16级报名～')
         else:
             return college
 
@@ -138,5 +138,5 @@ class WelcomeForm(forms.Form):
             int(house)
             int(code)
         except ValueError:
-            raise forms.ValidationError('按照格式填咯')
+            raise forms.ValidationError('按照格式填咯，注意宿舍楼和寝室号要求是纯数字哦')
         return dormitory
