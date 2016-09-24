@@ -18,7 +18,7 @@ def inform(sender, instance, created, **kwargs):
         # send the message only if new member is coming
     greet_email_tuple = (
         '计算机协会技术部报名',
-        '【计算机协会技术部】亲爱的' + instance.name + '同学，你好：\n        我们已经收到了你的报名信息，请耐心等待后续通知消息，谢谢。',
+        '【计算机协会技术部】亲爱的' + instance.name + '同学，你好：\n        我们已经收到了你的报名信息，请耐心等待后续通知消息，谢谢。请记得加入招新QQ群0810，也可点击此链接直接加入： http://excited.haha.im/?xu=1s',
         'HUSTCA <info@hustca.com>',
         [instance.email],
     )
